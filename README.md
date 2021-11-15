@@ -1,3 +1,3 @@
 # Image_Stitcher
-😎frkin cool stitcher thingy😎\n
+😎frkin cool stitcher thingy😎  
 🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈
