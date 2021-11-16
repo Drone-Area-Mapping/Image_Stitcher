@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <memory>
 #include <stdexcept>
+#include <windows.h>
 
 #include "opencv2/imgcodecs.hpp"
 #include "opencv2/highgui.hpp"
@@ -14,6 +15,7 @@
 
 #define clusterSize 4
 #define maxImageAmount 300
+#define backgroundBlackLevel 20
 
 using namespace std;
 using namespace cv;
@@ -23,6 +25,7 @@ class GAVS
 private:
 	int fullCycleItterator = 0;
 	int stitchCounter = 0;
+	int clusterCounter = 0;
 	String inputBasePath = "";
 	String inputPath = "";
 	String outputBasePath = "";
@@ -33,14 +36,17 @@ private:
 	bool final = false;
 	String errorCode = "";
 	vector<Mat> imgs;
+	int clusters[maxImageAmount/4+1][clusterSize];
+
 	Mat scan;
-	
+	Mat bgra;
 	
 public:
 	GAVS();
 	int clusteredBuffer[(maxImageAmount / clusterSize) + 1][clusterSize];
 	int stitch();
 	String executeWinCommand(const char*);
+	Mat backgroundRemover(Mat);
 		//getters
 	String getBasePath();
 	String getWorkingPath();
@@ -52,5 +58,5 @@ public:
 	void setInputPath();
 	void setOutputPath();
 	void setNextLevel();
-
+	bool setCluster(vector<int>);
 };
