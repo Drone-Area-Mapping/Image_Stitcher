@@ -7,8 +7,18 @@ GAVS::GAVS()
 
 int GAVS::stitch()
 {
+    if (clusterCounter == 1)
+    {
+        final = true;
+    }
+    else
+    {
+        final = false;
+    }
     setInputPath();
     setOutputPath();
+
+    
 
     PlaySound(TEXT("D:\\OneDrive - Avans Hogeschool\\Drone Area Mapping\\10. Example_data\\Dreamscape.wav"), NULL, SND_ASYNC);
 
@@ -51,8 +61,8 @@ int GAVS::stitch()
         imwrite(outputPath + to_string(stitchCounter) + fileType, backgroundRemover(scan));            //save the stitched file
         cout << "Stitch saved: " << outputPath + to_string(stitchCounter) + fileType << endl;
         stitchCounter++;
-        //imgs.clear();
     }
+    fullCycleItterator++;
 };
 
 string GAVS::executeWinCommand(const char* cmd) {
@@ -129,11 +139,18 @@ void GAVS::setOutputPath()
 
 bool GAVS::setCluster(vector<int> inputClusters)
 {
+    //perhaps change NULL receiving cluster input to -1?
+    if (inputClusters.size() == 0)
+    {
+        return false;
+    }
     for (int i = 0; i < inputClusters.size(); i++)
     {
         clusters[clusterCounter][i] = inputClusters.at(i);
     }
-    for(int i = 0; i < 4; i++) cout << clusters[clusterCounter][i] << endl;
+    cout << "[";
+    for(int i = 0; i < 4; i++) cout << clusters[clusterCounter][i] << ", ";
+    cout << "]" << endl;
     clusterCounter++;
     return true;
 };
@@ -143,5 +160,11 @@ int GAVS::getAmountOfFiles()
     stringstream numOfFiles(executeWinCommand(String("cd " + inputPath + " & powershell \"Get-ChildItem | Measure-Object | %{$_.Count}\"").c_str()));
     numOfFiles >> amountOfFiles;
     return amountOfFiles;
+}
+
+bool GAVS::getFinal()
+{
+    if (fullCycleItterator >= maxItterationSafetyLimit) return true;        //prevent more than 10 full cycle itterations (equal to 1048576 images, should never be possible in any way whatsoever)
+    return final;
 }
 

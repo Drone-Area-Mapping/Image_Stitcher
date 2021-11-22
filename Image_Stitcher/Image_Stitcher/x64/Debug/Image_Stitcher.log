@@ -1,2 +1,3 @@
-﻿  Main.cpp
+﻿  GAVS.cpp
+D:\Avans\Image_Stitcher\Image_Stitcher\Image_Stitcher\GAVS.cpp(66): warning C4715: 'GAVS::stitch': not all control paths return a value
   Image_Stitcher.vcxproj -> D:\Avans\Image_Stitcher\Image_Stitcher\x64\Debug\Image_Stitcher.exe

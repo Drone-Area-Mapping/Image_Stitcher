@@ -16,6 +16,7 @@
 #define clusterSize 4
 #define maxImageAmount 300
 #define backgroundBlackLevel 15
+#define maxItterationSafetyLimit 10
 
 using namespace std;
 using namespace cv;
@@ -52,6 +53,7 @@ public:
 	String getWorkingPath();
 	String getErrorCode();
 	int getAmountOfFiles();
+	bool getFinal();
 		//setters
 	void setInputBasePath(String);
 	void setOutputBasePath(String);
