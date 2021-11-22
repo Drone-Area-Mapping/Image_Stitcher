@@ -15,7 +15,7 @@
 
 #define clusterSize 4
 #define maxImageAmount 300
-#define backgroundBlackLevel 20
+#define backgroundBlackLevel 15
 
 using namespace std;
 using namespace cv;
@@ -35,7 +35,7 @@ private:
 	int amountOfFiles = 0;
 	bool final = false;
 	String errorCode = "";
-	vector<Mat> imgs;
+	
 	int clusters[maxImageAmount/4+1][clusterSize];
 
 	Mat scan;
