@@ -5,3 +5,5 @@ x86/
 *.log
 *.tlog
 *.user
+.tlog
+.tlog/*
