@@ -144,10 +144,12 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="GAVS.cpp" />
+    <ClCompile Include="SocketClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main.h" />
     <ClInclude Include="GAVS.h" />
+    <ClInclude Include="SocketClient.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
