@@ -37,8 +37,9 @@ bool SocketSlave::initialize()
 		closesocket(ConnectSocket);
 		printf("Unable to connect to server: %d\n", WSAGetLastError());
 		WSACleanup();
-		return 1;
+		return false;
 	}
+	return true;
 
 
 
@@ -69,7 +70,10 @@ string SocketSlave::read_line(SOCKET socket) // Function for reading lines sent 
 			vector.push_back(buffer);
 	}
 };
-
+string SocketSlave::returnline()
+{
+	return read_line(ConnectSocket);
+}
 void SocketSlave::getinput() // Function that reads lines and checks the server connection, runs on a separate thread
 {
 	string inputLine;

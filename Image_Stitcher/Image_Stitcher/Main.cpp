@@ -10,77 +10,69 @@ vector<Mat> imgs;
 int main(int argc, char* argv[])
 {
     SocketSlave socket;
-    gavs.setInputBasePath("D:\\OneDrive - Avans Hogeschool\\Drone Area Mapping\\10. Example_data\\example_images4\\RGB2\\");
-    gavs.setOutputBasePath("D:\\Avans\\ProgramOutput\\");
-   
-    socket.initialize();
+    JSONParser json;
+    
+    
+    while (!socket.initialize())
+    {
+        cout << "establishing socket connection.....\n";
+        this_thread::sleep_for(500ms);
+    }
+
+
     while (true)
     {
-        socket.getinput();
-        socket.getoutput();
+        GAVS gavs;
+        BlindCluster cluster;
+        //--!!Code between this for testing purposes only!!--
+        gavs.setInputBasePath("D:\\OneDrive - Avans Hogeschool\\Drone Area Mapping\\10. Example_data\\example_images4\\RGB\\");
+        gavs.setOutputBasePath("D:\\Avans\\ProgramOutput\\");
+        //--!!Code between this for testing purposes only!!--
+
+        while (idle)
+        {
+
+            readBuffer = socket.returnline();
+            if (readBuffer != "")
+            {
+                cout << readBuffer;
+                cout << json.getDataTitle(readBuffer).c_str() << ":" << json.getDataValue(readBuffer).c_str() << "\n";
+                if (json.getDataTitle(readBuffer) == "startProcessing")
+                {
+                    cout << "Initiating stitch!!!\n";
+                    idle = false;
+                    cluster.setTotalImages(15);
+                    cluster.cluster();
+                }
+            }
+
+        }
+        while (!idle)
+        {
+            cout << "stitching " << cluster.getAmountOfClusters() << " clusters\n";
+            //send back to gui status percentage: (currentCluster * (currentLayer + 1))/(totalClusters*(TotalLayers+1))
+            for (int i = 0; i < cluster.getAmountOfClusters(); i++)
+            {
+                cout << "...\n";
+                gavs.setCluster(cluster.getCluster());
+            }
+            if (cluster.getAmountOfClusters() == 1)
+            {
+                cout << "Final stitch detected!\n";
+                idle = true;
+            }
+            else
+            {
+                cluster.nextLayer();
+            }
+            gavs.stitch();
+            gavs.clearClusters();
+            if (idle)cout << "Shouldn't loop again\n";
+        }
     }
-
-    //Initialize threads
-    //thread inputThread(socket.getinput);
-    //thread outputThread(socket.getoutput);
-
-    //// Wait for the threads to shutdown after losing connection
-    //inputThread.join();
-    //outputThread.detach(); // Blocking thread, using detach to terminate the thread! This doesnt matter because main exits anyway.
-
-    //printf("[Main]: Closing connection with the server . . .");
-
-    //// cleanup
-    //// shutdown the connection since no more data will be sent
-    //iResult = shutdown(ConnectSocket, SD_BOTH);
-    //if (iResult == SOCKET_ERROR) {
-    //    printf("shutdown failed with error: %d\n", WSAGetLastError());
-    //    closesocket(ConnectSocket);
-    //    WSACleanup();
-    //    return 1;
-    //}
-    //closesocket(ConnectSocket);
-    //WSACleanup();
-
-
+    
 
 #ifdef DEBUG
-    vector<int> cluster1;
-    vector<int> cluster2;
-    vector<int> cluster3;
-    
-    for (int i = 1; i <= 4; i++)
-    {
-        cluster1.push_back(i);
-        cluster2.push_back(i + 5);
-        cluster3.push_back(i + 10);
-
-    };
-    //cluster1.push_back(0);
-    //cluster1.push_back(1);
-    //cluster1.push_back(2);
-    gavs.setCluster(cluster1);
-    gavs.setCluster(cluster2);
-    gavs.setCluster(cluster3);
-    //gavs.stitch();
-    exit(0);
+    //exit(0);
 #endif
-
-#ifndef DEBUG
-    while (!gavs.getFinal())
-    {
-        bool fillingClusterBuffers = true;
-        while (fillingClusterBuffers)
-        {
-            //fillingClusterBuffers = gavs.setCluster([INSERT GETCLUSTER FUNCTION HERE])
-        }
-        gavs.stitch();
-        //INSERT CLUSTERFUNCTION.NEXTPHASE HERE
-    }
-#endif
-
-
-    
-    
 }
-

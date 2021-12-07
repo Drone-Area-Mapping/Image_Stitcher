@@ -1,5 +1,8 @@
 #include "GAVS.h"
 
+using namespace std;
+using namespace cv;
+
 GAVS::GAVS()
 {
     cout << "Initializing stitcher" << endl;
@@ -41,6 +44,7 @@ int GAVS::stitch()
                 if (img.empty())
                 {
                     cout << "       Can't read image (probably incorrect naming of file)\n ";
+                    cout << "       file: " << inputPath + file << "\n";
                     return -1;
                 }
                 imgs.push_back(img);                                                  //load images
@@ -58,8 +62,8 @@ int GAVS::stitch()
             cout << "Can't stitch images\n";
             return -1;
         }
-        imwrite(outputPath + to_string(stitchCounter) + fileType, backgroundRemover(scan));            //save the stitched file
-        cout << "Stitch saved: " << outputPath + to_string(stitchCounter) + fileType << endl;
+        imwrite(outputPath + to_string(stitchCounter + 1) + fileType, backgroundRemover(scan));            //save the stitched file
+        cout << "Stitch saved: " << outputPath + to_string(stitchCounter + 1) + fileType << endl;
         stitchCounter++;
     }
     fullCycleItterator++;
@@ -101,6 +105,13 @@ Mat GAVS::backgroundRemover(Mat input)
     return output;
 };
 
+void GAVS::clearClusters()
+{
+    cout << "resetting GAVS clusters\n";
+    clusterCounter = 0;
+    stitchCounter = 0;
+}
+
 void GAVS::setInputBasePath(String input)
 {
     inputBasePath = input;
@@ -119,7 +130,7 @@ void GAVS::setInputPath()                     //stitching programs current input
     }
     else
     {
-        inputPath = tempFiles + to_string(fullCycleItterator);
+        inputPath = outputBasePath + tempFiles + to_string(fullCycleItterator) + "\\";
     }
 };
 
@@ -142,6 +153,7 @@ bool GAVS::setCluster(vector<int> inputClusters)
     //perhaps change NULL receiving cluster input to -1?
     if (inputClusters.size() == 0)
     {
+        cout << "incorrect cluster input\n";
         return false;
     }
     for (int i = 0; i < inputClusters.size(); i++)

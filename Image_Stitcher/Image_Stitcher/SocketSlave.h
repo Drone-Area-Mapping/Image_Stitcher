@@ -17,10 +17,6 @@
 
 using namespace std;
 
-
-
-
-
 class SocketSlave
 {
 	private:
@@ -28,6 +24,7 @@ class SocketSlave
 	public:
 		SocketSlave();
 		string read_line(SOCKET);
+		string returnline();
 		void getinput();
 		void getoutput();
 		bool initialize();

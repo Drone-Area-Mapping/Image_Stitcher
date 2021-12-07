@@ -48,6 +48,7 @@ public:
 	int stitch();
 	String executeWinCommand(const char*);
 	Mat backgroundRemover(Mat);
+	void clearClusters();
 		//getters
 	String getBasePath();
 	String getWorkingPath();
@@ -59,6 +60,5 @@ public:
 	void setOutputBasePath(String);
 	void setInputPath();
 	void setOutputPath();
-	void setNextLevel();
 	bool setCluster(vector<int>);
 };
