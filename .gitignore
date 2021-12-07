@@ -6,4 +6,7 @@ x86/
 *.tlog
 *.user
 .tlog
-.tlog/*
+.tlog/
+*.vcxproj
+*.exe
+*/Debug/*
