@@ -24,6 +24,7 @@ class SocketSlave
 	public:
 		SocketSlave();
 		string read_line(SOCKET);
+		void write_line(string);
 		string returnline();
 		void getinput();
 		void getoutput();

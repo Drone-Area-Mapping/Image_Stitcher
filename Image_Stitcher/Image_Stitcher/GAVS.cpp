@@ -114,12 +114,14 @@ void GAVS::clearClusters()
 
 void GAVS::setInputBasePath(String input)
 {
-    inputBasePath = input;
+    inputBasePath = input+"\\";
+    cout << "Input path set to: " << inputBasePath.c_str() << "\n";
 };
 
 void GAVS::setOutputBasePath(String output)
 {
-    outputBasePath = output;
+    outputBasePath = output + "\\";
+    cout << "Output path set to: " << outputBasePath.c_str() << "\n";
 };
 
 void GAVS::setInputPath()                     //stitching programs current input path is defined by the fullCycleItterator and basepath

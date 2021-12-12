@@ -16,6 +16,8 @@ public:
 	void setTotalImages(int);
 	vector<int> getCluster();
 	int getAmountOfClusters();
+	int getAmountOfClusters(int);
+	int getAmountOfLayers();
 	void nextLayer();
 	void cluster();
 	void reset();

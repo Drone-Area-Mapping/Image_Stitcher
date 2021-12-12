@@ -74,6 +74,11 @@ string SocketSlave::returnline()
 {
 	return read_line(ConnectSocket);
 }
+void SocketSlave::write_line(string input)
+{
+	send(ConnectSocket, input.c_str(), input.length(), 0);
+}
+
 void SocketSlave::getinput() // Function that reads lines and checks the server connection, runs on a separate thread
 {
 	string inputLine;

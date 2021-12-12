@@ -72,4 +72,12 @@ int BlindCluster::getAmountOfClusters()
 {
 	return totalClusters[currentLayer];
 }
+int BlindCluster::getAmountOfClusters(int layer)
+{
+	return totalClusters[layer];
+}
+int BlindCluster::getAmountOfLayers()
+{
+	return totalLayers;
+}
 

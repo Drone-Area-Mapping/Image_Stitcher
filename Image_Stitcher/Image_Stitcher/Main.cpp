@@ -3,14 +3,16 @@
 
 using namespace std;
 using namespace cv;
+using json = nlohmann::json;
 
 vector<Mat> imgs;
+json progressJson;
 //atomic<bool> exitProgram(false); // Declare atomic variable for multi-thread communication
 
 int main(int argc, char* argv[])
 {
     SocketSlave socket;
-    JSONParser json;
+    //JSONParser json;
     
     
     while (!socket.initialize())
@@ -25,8 +27,8 @@ int main(int argc, char* argv[])
         GAVS gavs;
         BlindCluster cluster;
         //--!!Code between this for testing purposes only!!--
-        gavs.setInputBasePath("D:\\OneDrive - Avans Hogeschool\\Drone Area Mapping\\10. Example_data\\example_images4\\RGB\\");
-        gavs.setOutputBasePath("D:\\Avans\\ProgramOutput\\");
+        //gavs.setInputBasePath("D:\\OneDrive - Avans Hogeschool\\Drone Area Mapping\\10. Example_data\\example_images4\\RGB\\");
+        //gavs.setOutputBasePath("D:\\Avans\\ProgramOutput\\");
         //--!!Code between this for testing purposes only!!--
 
         while (idle)
@@ -36,10 +38,14 @@ int main(int argc, char* argv[])
             if (readBuffer != "")
             {
                 cout << readBuffer;
-                cout << json.getDataTitle(readBuffer).c_str() << ":" << json.getDataValue(readBuffer).c_str() << "\n";
-                if (json.getDataTitle(readBuffer) == "startProcessing")
+                json j_complete = json::parse(readBuffer);
+                cout << j_complete["name"];
+                //cout << json.getDataTitle(readBuffer).c_str() << ":" << json.getDataValue(readBuffer).c_str() << "\n";
+                if (j_complete["name"] == "startProcessing")
                 {
                     cout << "Initiating stitch!!!\n";
+                    gavs.setInputBasePath(j_complete["value"]["import"]);
+                    gavs.setOutputBasePath(j_complete["value"]["export"]);
                     idle = false;
                     cluster.setTotalImages(15);
                     cluster.cluster();
@@ -49,7 +55,13 @@ int main(int argc, char* argv[])
         }
         while (!idle)
         {
+            
             cout << "stitching " << cluster.getAmountOfClusters() << " clusters\n";
+            cout << "stitching " << cluster.getAmountOfLayers() << " layers\n";
+            tempDumbProgress++;
+            progress = (tempDumbProgress/cluster.getAmountOfLayers())*100;
+            progressJson["stitchProgress"] = progress;
+            socket.write_line(progressJson.dump());
             //send back to gui status percentage: (currentCluster * (currentLayer + 1))/(totalClusters*(TotalLayers+1))
             for (int i = 0; i < cluster.getAmountOfClusters(); i++)
             {
@@ -60,6 +72,7 @@ int main(int argc, char* argv[])
             {
                 cout << "Final stitch detected!\n";
                 idle = true;
+                tempDumbProgress = 0;
             }
             else
             {
