@@ -69,9 +69,11 @@ int GAVS::stitch()
         stitchCounter++;
         totalStitchCounter++;
         updateProgress();
+        
         if (getSocketLine() == "stopProcessing")
         {
             stitchCounter = 301;
+            errorCode = "stitching aborted!";
         }
     }
     fullCycleItterator++;
@@ -118,6 +120,7 @@ void GAVS::clearClusters()
     cout << "resetting GAVS clusters\n";
     clusterCounter = 0;
     stitchCounter = 0;
+    errorCode = "";
 }
 
 void GAVS::updateProgress()
@@ -196,7 +199,9 @@ void GAVS::setProgressInfo(SocketSlave socketInput, int amountOfActions)
 
 String GAVS::getSocketLine()
 {
+    cout << "socket reading start\n";
     readBuffer = socket.returnline();
+    cout << "socket read\n";
     if (readBuffer != "")
     {
         jsonRaw = json::parse(readBuffer);
@@ -216,5 +221,10 @@ bool GAVS::getFinal()
 {
     if (fullCycleItterator >= maxItterationSafetyLimit) return true;        //prevent more than 10 full cycle itterations (equal to 1048576 images, should never be possible in any way whatsoever)
     return final;
+}
+
+String GAVS::getErrorCode()
+{
+    return errorCode;
 }
 

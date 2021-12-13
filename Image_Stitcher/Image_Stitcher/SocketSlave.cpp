@@ -31,6 +31,7 @@ bool SocketSlave::initialize()
 	addrServer.sin_port = htons(DEFAULT_PORT);
 	memset(&(addrServer.sin_zero), '\0', 8);
 
+
 	// Connect to server.
 	iResult = connect(ConnectSocket, (SOCKADDR*)&addrServer, sizeof(addrServer));
 	if (iResult == SOCKET_ERROR) {
@@ -39,6 +40,8 @@ bool SocketSlave::initialize()
 		WSACleanup();
 		return false;
 	}
+	u_long mode = 1;  // 1 to enable non-blocking socket
+	ioctlsocket(ConnectSocket, FIONBIO, &mode);
 	return true;
 
 
@@ -53,12 +56,15 @@ string SocketSlave::read_line(SOCKET socket) // Function for reading lines sent 
 	char buffer;
 	int bytes_received;
 	int emptyCharsAllowed = 20;
-	while (true) {
-		
+	while (emptyCharsAllowed > 0) {
 		bytes_received = recv(socket, &buffer, 1, 0);
 		if (bytes_received <= 0)
 		{
 			return "";
+		}
+		if (buffer == ' ')
+		{
+			emptyCharsAllowed--;
 		}
 		if (buffer == '\n') {
 			vector.push_back(buffer);

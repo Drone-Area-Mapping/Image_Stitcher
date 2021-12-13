@@ -13,7 +13,6 @@ json progressJson;
 int main(int argc, char* argv[])
 {
     SocketSlave socket;
-    //JSONParser json;
     
     
     while (!socket.initialize())
@@ -71,7 +70,6 @@ int main(int argc, char* argv[])
                 cout << "Final stitch detected!\n";
                 idle = true;
                 totalAmountOfActions = 0;
-
             }
             else
             {
@@ -79,6 +77,7 @@ int main(int argc, char* argv[])
             }
 
             gavs.stitch();
+            if (gavs.getErrorCode() == "stitching aborted!") idle = true;
             gavs.clearClusters();
             if (idle)
             {
