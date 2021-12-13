@@ -7,6 +7,7 @@ using json = nlohmann::json;
 
 vector<Mat> imgs;
 json progressJson;
+
 //atomic<bool> exitProgram(false); // Declare atomic variable for multi-thread communication
 
 int main(int argc, char* argv[])
@@ -26,10 +27,6 @@ int main(int argc, char* argv[])
     {
         GAVS gavs;
         BlindCluster cluster;
-        //--!!Code between this for testing purposes only!!--
-        //gavs.setInputBasePath("D:\\OneDrive - Avans Hogeschool\\Drone Area Mapping\\10. Example_data\\example_images4\\RGB\\");
-        //gavs.setOutputBasePath("D:\\Avans\\ProgramOutput\\");
-        //--!!Code between this for testing purposes only!!--
 
         while (idle)
         {
@@ -49,19 +46,20 @@ int main(int argc, char* argv[])
                     idle = false;
                     cluster.setTotalImages(15);
                     cluster.cluster();
+                    for (int i = 0; i < cluster.getAmountOfLayers(); i++)
+                    {
+                        totalAmountOfActions += cluster.getAmountOfClusters(i);
+                    }
+                    gavs.setProgressInfo(socket, totalAmountOfActions);
                 }
             }
 
         }
         while (!idle)
         {
-            
             cout << "stitching " << cluster.getAmountOfClusters() << " clusters\n";
             cout << "stitching " << cluster.getAmountOfLayers() << " layers\n";
-            tempDumbProgress++;
-            progress = (tempDumbProgress/cluster.getAmountOfLayers())*100;
-            progressJson["stitchProgress"] = progress;
-            socket.write_line(progressJson.dump());
+
             //send back to gui status percentage: (currentCluster * (currentLayer + 1))/(totalClusters*(TotalLayers+1))
             for (int i = 0; i < cluster.getAmountOfClusters(); i++)
             {
@@ -72,15 +70,24 @@ int main(int argc, char* argv[])
             {
                 cout << "Final stitch detected!\n";
                 idle = true;
-                tempDumbProgress = 0;
+                totalAmountOfActions = 0;
+
             }
             else
             {
                 cluster.nextLayer();
             }
+
             gavs.stitch();
             gavs.clearClusters();
-            if (idle)cout << "Shouldn't loop again\n";
+            if (idle)
+            {
+                cout << "Shouldn't loop again\n";
+                
+                progressJson["name"] = "stitchProgress";
+                progressJson["value"] = 100;
+                socket.write_line(progressJson.dump());
+            }
         }
     }
     

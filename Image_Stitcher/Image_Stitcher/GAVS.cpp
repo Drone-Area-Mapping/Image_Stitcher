@@ -2,6 +2,8 @@
 
 using namespace std;
 using namespace cv;
+using json = nlohmann::json;
+json jsonRaw;
 
 GAVS::GAVS()
 {
@@ -65,6 +67,12 @@ int GAVS::stitch()
         imwrite(outputPath + to_string(stitchCounter + 1) + fileType, backgroundRemover(scan));            //save the stitched file
         cout << "Stitch saved: " << outputPath + to_string(stitchCounter + 1) + fileType << endl;
         stitchCounter++;
+        totalStitchCounter++;
+        updateProgress();
+        if (getSocketLine() == "stopProcessing")
+        {
+            stitchCounter = 301;
+        }
     }
     fullCycleItterator++;
 };
@@ -112,8 +120,19 @@ void GAVS::clearClusters()
     stitchCounter = 0;
 }
 
+void GAVS::updateProgress()
+{
+    json progressJson;
+    progressJson["name"] = "stitchProgress";
+    progressJson["value"] = (100/totalAmountOfActions) * totalStitchCounter;
+    cout << "stitchCounter: " << totalStitchCounter << "\namountOfActions: " << totalAmountOfActions << "\n";
+    socket.write_line(progressJson.dump());
+    cout << "set progress to: " << to_string((100 / totalAmountOfActions) * totalStitchCounter).c_str() << "% \n";
+}
+
 void GAVS::setInputBasePath(String input)
 {
+    totalStitchCounter = 0;
     inputBasePath = input+"\\";
     cout << "Input path set to: " << inputBasePath.c_str() << "\n";
 };
@@ -169,12 +188,29 @@ bool GAVS::setCluster(vector<int> inputClusters)
     return true;
 };
 
+void GAVS::setProgressInfo(SocketSlave socketInput, int amountOfActions)
+{
+    socket = socketInput;
+    totalAmountOfActions = amountOfActions - 1;
+};
+
+String GAVS::getSocketLine()
+{
+    readBuffer = socket.returnline();
+    if (readBuffer != "")
+    {
+        jsonRaw = json::parse(readBuffer);
+        return jsonRaw["name"];
+    }
+    return "";
+};
+
 int GAVS::getAmountOfFiles()
 {
     stringstream numOfFiles(executeWinCommand(String("cd " + inputPath + " & powershell \"Get-ChildItem | Measure-Object | %{$_.Count}\"").c_str()));
     numOfFiles >> amountOfFiles;
     return amountOfFiles;
-}
+};
 
 bool GAVS::getFinal()
 {

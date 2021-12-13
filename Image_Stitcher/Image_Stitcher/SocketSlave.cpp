@@ -52,11 +52,14 @@ string SocketSlave::read_line(SOCKET socket) // Function for reading lines sent 
 	vector<char> vector;
 	char buffer;
 	int bytes_received;
-
+	int emptyCharsAllowed = 20;
 	while (true) {
+		
 		bytes_received = recv(socket, &buffer, 1, 0);
-
-		if (bytes_received <= 0) return "";
+		if (bytes_received <= 0)
+		{
+			return "";
+		}
 		if (buffer == '\n') {
 			vector.push_back(buffer);
 			char* pchar = new char[vector.size() + 1];

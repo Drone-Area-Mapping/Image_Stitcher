@@ -1,5 +1,5 @@
 #include "BlindCluster.h"
-
+#include <numbers>
 
 BlindCluster::BlindCluster()
 {
@@ -12,6 +12,7 @@ BlindCluster::~BlindCluster()
 }
 void BlindCluster::cluster()
 {
+	
 	bool clustering = true;
 	int currentWorkingLayer = 0;
 	float currentLayerClusterAmount;
@@ -26,7 +27,7 @@ void BlindCluster::cluster()
 		for (int x = 0; x < currentLayerClusterAmount; x++)
 		{
 			cout << "[";
-			for (int i = 0; i < clusterSize; i++)
+			for (int i = 1; i < clusterSize+1; i++)
 			{
 				cout << (x * clusterSize) + i << " ";
 				clusters[currentWorkingLayer][x].push_back((x * clusterSize) + i);

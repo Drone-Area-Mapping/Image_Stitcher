@@ -1,3 +1,4 @@
+#pragma once
 #undef UNICODE
 
 #define WIN32_LEAN_AND_MEAN
@@ -12,7 +13,7 @@
 
 #pragma comment (lib, "Ws2_32.lib")
 
-#define DEFAULT_PORT 1339
+#define DEFAULT_PORT 1337
 #define DEFAULT_IP "127.0.0.1"
 
 using namespace std;
@@ -20,6 +21,7 @@ using namespace std;
 class SocketSlave
 {
 	private:
+
 
 	public:
 		SocketSlave();
