@@ -21,12 +21,18 @@
     <ClCompile Include="GAVS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Clustering.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GAVS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Clustering.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
