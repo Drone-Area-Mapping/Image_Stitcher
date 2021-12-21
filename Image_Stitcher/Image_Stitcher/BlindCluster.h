@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#define clusterSize 4.0
+#define clusterSize 94
 
 using namespace std;
 

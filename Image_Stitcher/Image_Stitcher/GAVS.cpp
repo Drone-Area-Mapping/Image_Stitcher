@@ -40,16 +40,22 @@ int GAVS::stitch()
         {
             if (clusters[stitchCounter][i] != NULL)
             {
-                String file = to_string(clusters[stitchCounter][i]) + fileType;                                //note: remove the +1 here if file count starts at 0 instead of 1
+                String file;
+                if (fullCycleItterator == 0) file = "RGB" + to_string(clusters[stitchCounter][i]) + inputFileType;
+                else file = to_string(clusters[stitchCounter][i]) + fileType;                                //note: remove the +1 here if file count starts at 0 instead of 1
                 Mat img = imread(inputPath + file);
                 cout << "Loaded image: " << file.c_str() << endl;
                 if (img.empty())
                 {
                     cout << "       Can't read image (probably incorrect naming of file)\n ";
                     cout << "       file: " << inputPath + file << "\n";
-                    return -1;
+                    //return -1;
                 }
-                imgs.push_back(img);                                                  //load images
+                else
+                {
+                    imgs.push_back(img);
+                }
+                                                                //load images
             }
             else
             {
@@ -62,7 +68,12 @@ int GAVS::stitch()
         if (status != Stitcher::OK)
         {
             cout << "Can't stitch images\n";
-            return -1;
+            //return -1;
+        }
+        else
+        {
+            imwrite(outputPath + to_string(stitchCounter + 1) + fileType, backgroundRemover(scan));            //save the stitched file
+            cout << "Stitch saved: " << outputPath + to_string(stitchCounter + 1) + fileType << endl;
         }
         imwrite(outputPath + to_string(stitchCounter + 1) + fileType, backgroundRemover(scan));            //save the stitched file
         cout << "Stitch saved: " << outputPath + to_string(stitchCounter + 1) + fileType << endl;
@@ -77,6 +88,7 @@ int GAVS::stitch()
         }
     }
     fullCycleItterator++;
+    return 0;
 };
 
 string GAVS::executeWinCommand(const char* cmd) {

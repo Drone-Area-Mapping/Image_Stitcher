@@ -16,7 +16,7 @@
 
 #pragma comment (lib, "Ws2_32.lib")
 
-#define DEFAULT_PORT 1338
+#define DEFAULT_PORT 1337
 #define DEFAULT_IP "127.0.0.1"
 
 using namespace std;

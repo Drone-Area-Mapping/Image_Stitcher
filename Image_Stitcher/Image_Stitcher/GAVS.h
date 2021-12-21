@@ -17,7 +17,7 @@
 #include "opencv2/stitching.hpp"
 #include "opencv2/opencv.hpp"
 
-#define clusterSize 4
+#define clusterSize 94
 #define maxImageAmount 300
 #define backgroundBlackLevel 15
 #define maxItterationSafetyLimit 10
@@ -37,7 +37,8 @@ private:
 	String outputBasePath = "";
 	String outputPath = "";
 	String tempFiles = "temp\\";
-	String fileType = ".png";
+	String inputFileType = ".jpg";
+	String fileType = ".jpg";
 	int amountOfFiles = 0;
 	int totalAmountOfActions;
 	bool final = false;

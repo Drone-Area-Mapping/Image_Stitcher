@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
                     gavs.setInputBasePath(j_complete["value"]["import"]);
                     gavs.setOutputBasePath(j_complete["value"]["export"]);
                     idle = false;
-                    cluster.setTotalImages(15);
+                    cluster.setTotalImages(94);
                     cluster.cluster();
                     for (int i = 0; i < cluster.getAmountOfLayers(); i++)
                     {
